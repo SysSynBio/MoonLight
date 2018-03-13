@@ -1,1 +1,0 @@
-MoonLight is the latest curated version of Moonfit, a C++ software to optimize and solve home-made ODE models using a graphical interface.

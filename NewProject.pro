@@ -15,7 +15,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 #QT += svg
 
 # ======================== BOOST PART ==================================
-# boost is not required anymore for the code.
+# In order to use boost (need to be downloaded and unzipped wherever)
 win32: INCLUDEPATH += C:\Qt\Boost\boost_1_62_0\boost_1_62_0
 #in windows, boosts raises the following error : "boost unable to find numeric literal operator operator Q" => need to add the following option
 win32: QMAKE_CXXFLAGS += -fext-numeric-literals
@@ -29,6 +29,9 @@ TARGET = ExamplesGradCourse
 
 #put += console to run in a separate terminal
 #CONFIG += console
+
+# note: to allow multiple launching of the code from QtCreator, you might need to go to
+# QTcreator preferences (Tools->Options, or File->preferences), Build & Run panel, Choose 'Stop Applications before building: None'
 
 #bundles might be required for MAC OS ??
 #CONFIG -= app_bundle
@@ -87,14 +90,9 @@ HEADERS += \
     Interface/QCustomPlot/qcustomplot.h \
     Interface/starter.h \
     Interface/simuwin.h \
-    Examples/expsGradCourse.h \
-    Examples/namesGradCourse.h \
-    Examples/Models/1-modeleLogistic.h \
-    Examples/Models/2-modeleLotkaVolterra.h \
-    Examples/Models/3-modeleDevelopment.h \
-    Examples/Models/5-modeleInfluenza.h \
-    Examples/Models/4-modeleDevelopmentNoFeedback.h
-
+    NewProject/expsNewProject.h \
+    NewProject/namesNewProject.h \
+    NewProject/Models/model1.h 
 
 SOURCES += \
     Framework/evaluator.cpp \
@@ -131,29 +129,14 @@ SOURCES += \
     Extreminator/fitteInterface.cpp \
     Interface/minimumInterface.cpp \
     common.cpp \
-    Examples/expsGradCourse.cpp \
-    Examples/namesGradCourse.cpp \
-    Examples/scriptsGradCourse.cpp \
-    Examples/Models/1-modeleLogistic.cpp \
-    Examples/Models/2-modeleLotkaVolterra.cpp \
-    Examples/Models/3-modeleDevelopment.cpp \
-    Examples/Models/5-modeleInfluenza.cpp \
-    Examples/Models/4-modeleDevelopmentNoFeedback.cpp
-
+    NewProject/expsNewProject.cpp \
+    NewProject/namesNewProject.cpp \
+    NewProject/Models/model1.cpp \
+    NewProject/mainNewProject.cpp
+	
 FORMS += \
     Interface/simuwin.ui \
-    Interface/optselect.ui \
-    Interface/starter.ui
+    Interface/optselect.ui 
 
-DISTFILES += \
-    Examples/DATA/Data_new.txt \
-    Examples/DATA/DataStd_new.txt \
-    Examples/DATA/DevelopmentDatasetMutant.txt \
-    Examples/DATA/DevelopmentDatasetWT.txt \
-    Examples/DATA/InfluenzaDataset.txt \
-    Examples/DATA/LogisticDataset1.txt \
-    Examples/DATA/LogisticDataset2.txt \
-    Examples/DATA/LotkaVolterraDataset.txt \
-    Examples/DATA/DevelopmentRealMutant.txt \
-    Examples/DATA/DevelopmentRealWT.txt
+
 

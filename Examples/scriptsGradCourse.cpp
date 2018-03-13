@@ -328,8 +328,8 @@ void scriptsWithMainExp(int nb,string newConfigFile, string newParameterSet){
         case 1: {Data_new = new TableCourse(folder + string("DATA/LogisticDataset2.txt")); break;}
         case 2: {Data_new = new TableCourse(folder + string("DATA/LotkaVolterraDataset.txt")); break;}
         case 3: case 4: {
-        Data_new = new TableCourse(folder + string("DATA/DevelopmentDatasetWT.txt"));
-        Data_mutant =  new TableCourse(folder + string("DATA/DevelopmentDatasetMutant.txt")); break;}
+        Data_new = new TableCourse(folder + string("DATA/DevelopmentRealWT.txt"));
+        Data_mutant =  new TableCourse(folder + string("DATA/DevelopmentRealMutant.txt")); break;}
         case 5: {Data_new = new TableCourse(folder + string("DATA/InfluenzaDataset.txt")); break;}
 
     }

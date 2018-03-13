@@ -103,7 +103,7 @@ void modeleDevelopment::initialise(long long _background){ // don't touch to par
 
     // test if each possible background is in the current combination of backgrounds (stored in the field background)
     if((background != Back::WT) && (background != _background)){
-        cerr << "WRN : modeleLeishmania::initialize, when the background has been changed from WT, you should not change it again, because parameters can not be retrieved. Please load parameters again" << endl;
+        //cerr << "WRN : modeleLeishmania::initialize, when the background has been changed from WT, you should not change it again, because parameters can not be retrieved. Please load parameters again" << endl;
     }
     background = _background;
     if(background == Back::WT){

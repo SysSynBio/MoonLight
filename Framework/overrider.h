@@ -19,7 +19,7 @@ struct overrider {
     int nbIndices;                                  /// Number of time-points stored
     void reset();
     void extend(int newNbIndices);
-    vector<typeData> typeStorage;                        /// Each curve can be function / interpolated tata
+    vector<typeData> typeStorage;                   /// Each curve can be function / interpolated tata
     vector<tk::spline*> dataSpl;                    /// Storage as a spline for each curve
     vector<double (*)(double)> dataFunct;           /// OR : storage as a function (double --> double)
 
