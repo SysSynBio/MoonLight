@@ -26,6 +26,8 @@ struct TableCourse {
 
     /// Reading a table from another table or from a file
     TableCourse(TableCourse* toCopy);   /// copy from another one
+    TableCourse(const TableCourse& tc);
+
     TableCourse(string fileToRead);     /// reads from a file.
             /// SYNTAX of a TableCourse file (read or exported):
             ///
@@ -37,6 +39,7 @@ struct TableCourse {
 
     /// Manually making and writing into a table
     TableCourse(int _nbVar);            /// creates empty, number of columns
+    ~TableCourse();
     void setHeader(int i, string title);                    /// Danger : starts at index 1 for variables. Header[0] = titre of the table
     void addSet(double attr, vector<double> &toCopy);       /// Add a line (i.e. the value of each variable at the new time (attr)
     void reset();

@@ -925,7 +925,8 @@ string manageSims::makeTextReportParamSet(string _folder, int configuration, dou
     for(int i = 0; i < nbExp; ++i){
         f << "Simulated kinetics for experiment " << currentExperiment->names_exp[i] << "\n";
         currentExperiment->simulate(i, NULL, true);
-        currentData[i] =  currentModel->getCinetique();
+        if(currentData[i]) {delete currentData[i]; currentData[i] = NULL;}
+        currentData[i] = new TableCourse(currentModel->getCinetique());
         if(currentModel->penalities > 0){
             f << "Note : simulation diverged for experiment (" << currentExperiment->expName(i) << ") with penalty " << currentExperiment->m->penalities << "\n";
         }
@@ -938,10 +939,10 @@ string manageSims::makeTextReportParamSet(string _folder, int configuration, dou
             f << "Simulated kinetics for variable " << j << " : " << currentModel->getName(j) << "\n";
             if(currentExperiment->canOverride(currentModel->getGlobalID(j))) {f << "Cost : " << currentExperiment->costPart(currentModel->getGlobalID(j)) << "\n";}
             if(nbExp < 1) return string("No Experiment !");
-            vector<double> Xs = currentData[0].getTimePoints();
+            vector<double> Xs = currentData[0]->getTimePoints();
             vector< vector<double>* > packData;
             for(int i = 0; i < currentExperiment->nbCond(); ++i){
-                packData.push_back(new vector<double>(currentData[i].getTimeCourse(j)));
+                packData.push_back(new vector<double>(currentData[i]->getTimeCourse(j)));
                 //// if(packData[i]->size() != Xs.size()) cerr << "ERR: manageSims::makeTextReportParamSet, exp " << currentExperiment->expName(i) << ", kinetics from different variables have different number of time points\n";
             }
             int nbTp = Xs.size();
@@ -1367,8 +1368,13 @@ void simuWin::currentExperimentChanged(){
     if(!currentExperiment) {cerr << "ERR::simuWin::currentExperimentChanged, the new experiment is NULL"; return;}
     int NC = currentExperiment->nbCond();
 
+    for(int i = 0; i < currentData.size(); ++i){
+        delete currentData[i];
+        currentData[i] = NULL;
+    }
     currentData.clear();
-    currentData.resize(NC, TableCourse(0));
+    // Philippe 2018:  be careful, because everything is continued to be plotted, so will look for currentData etc ...
+    currentData.resize(NC, NULL);
 
     // Update the combo-box to chose the different conditions of the current experiment
     QObject::disconnect(ui->comboBoxSubExperiment, SIGNAL(activated(int)), this, SLOT(simulate()));
@@ -1602,7 +1608,9 @@ void simuWin::simulate(){
                 // SIMULATE !!
                 currentExperiment->simulate(i, NULL, true);
                 if(ui->checkBoxDisplayCurves->isChecked()){
-                    currentData[i] =  currentExperiment->m->getCinetique();
+                    if( currentData[i]) {delete currentData[i]; currentData[i] = NULL;}
+                    if(i > currentData.size()) cerr << "Something happened to currentData" << endl;
+                    currentData[i] = new TableCourse(currentExperiment->m->getCinetique());
                     ui->progressBar->setValue((100 * (i+1)) / nbExp);
                     if(currentExperiment->m->penalities > 0){
                         ui->textBrowserStatus->append(QString("ERR : simulation diverged for ") + QString(currentExperiment->expName(i).c_str()) + QString(", penality : ") + QString::number(currentExperiment->m->penalities));
@@ -1616,7 +1624,8 @@ void simuWin::simulate(){
             ui->comboBoxSubExperiment->setEnabled(true);
             ui->progressBar->hide();
             currentExperiment->simulate(ui->comboBoxSubExperiment->currentIndex(), NULL, true); //dangereux le 'currentIndex' !!
-            currentData[ui->comboBoxSubExperiment->currentIndex()] =  currentExperiment->m->getCinetique();
+             if(currentData[ui->comboBoxSubExperiment->currentIndex()]) delete currentData[ui->comboBoxSubExperiment->currentIndex()];
+            currentData[ui->comboBoxSubExperiment->currentIndex()] = new TableCourse(currentExperiment->m->getCinetique());
             if(currentModel->penalities > 0){
                 ui->textBrowserStatus->append(QString("ERR : simulation diverged for ") + ui->comboBoxSubExperiment->currentText() + QString(", penality : ") + QString::number(currentExperiment->m->penalities));
             }
@@ -1693,8 +1702,8 @@ void simuWin::varChanged(int j){
                 currentGraphe->setNbCurves(2*currentExperiment->nbCond());
                 currentGraphe->setTitle(ui->comboBoxVariable->currentText());
                 for(int i = 0; i < currentExperiment->nbCond(); ++i){
-                    vector<double> Xs = currentData[i].getTimePoints();
-                    vector<double> Ys = currentData[i].getTimeCourse(j);
+                    vector<double> Xs = currentData[i]->getTimePoints();
+                    vector<double> Ys = currentData[i]->getTimeCourse(j);
                     // needs to find the index of the variable
                     //cout << "looks for ID " << currentModel->getGlobalID(j) << "\tglobalName=" << currentExperiment->NamesVariablesInTheirIndex[currentModel->getGlobalID(j)] << "\t";
                     int nbTp = Xs.size();
@@ -2345,6 +2354,9 @@ void evolution::clear(){
 
 void evolution::newValue(double _v){
     if(nbInCurrentGroup == sizeGroups) {
+        static int cptNew = 0;
+        cptNew++;
+        if(cptNew > 10000) cerr << "WRN: Would need to free memory inside evolution::newValue" << endl;
         tables.push_back(new vector<double>(sizeGroups, 1e12));
         nbInCurrentGroup = 0;
         double sum = 0;

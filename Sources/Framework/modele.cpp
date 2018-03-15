@@ -394,7 +394,8 @@ void Modele::newCinetiqueIfRequired(){
 void Modele::deleteCinetique(){
     if(cinetique){delete cinetique; cinetique = NULL;}}
 TableCourse Modele::getCinetique(){
-    if(cinetique) return *cinetique; else return TableCourse(nbVars);}
+    if(cinetique) return *cinetique;
+    else return TableCourse(nbVars);}
 void Modele::save_state(double _t){
     if(saveKinetics && cinetique){cinetique->addSet(t, val);}}
 

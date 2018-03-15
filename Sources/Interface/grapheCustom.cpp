@@ -205,6 +205,11 @@ void grapheCustom::setNbCurves(int _nbCurves){
     }
     Data.resize(nbCurves);
     xpoints.resize(nbCurves);
+
+    static int cptNew = 0;
+    cptNew++;
+    if(cptNew > 10000) cerr << "WRN: Would need to free memory inside evolution::newValue" << endl;
+
     for(int i = 0; i < nbCurves; ++i){
         Data[i] = new QVector<double>();
         xpoints[i] = new QVector<double>();
@@ -514,6 +519,12 @@ void grapheCustom::removeAllGraphs()
 void grapheCustom::contextMenuRequest(QPoint pos)
 {
   QMenu *menu = new QMenu(this);
+
+  static int cptNew = 0;
+  cptNew++;
+  if(cptNew > 10000) cerr << "WRN: Would need to free memory inside grapheCustom::contextmenurequest" << endl;
+
+
   menu->setAttribute(Qt::WA_DeleteOnClose);
   
   if (PLOT->legend->selectTest(pos, false) >= 0) // context menu on legend requested

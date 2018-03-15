@@ -23,6 +23,15 @@ TableCourse::TableCourse(string fileToRead){
     read(fileToRead);
 }
 
+TableCourse::~TableCourse(){
+    //cerr << "DeleteKin" << print() << endl;
+    int S = storage.size();
+    for(int i = 0; i < S; ++i){
+        if(storage[i]) delete storage[i];
+    }
+    storage.clear();
+}
+
 TableCourse::TableCourse(TableCourse* toCopy){
     nbVar = toCopy->nbVar;
     reset();
@@ -44,6 +53,32 @@ TableCourse::TableCourse(TableCourse* toCopy){
         headers[i] = toCopy->headers[i];
     }
 }
+
+TableCourse::TableCourse(const TableCourse &toCopy){
+    // cerr << "ERR: implicit copy !!!" << endl;
+    // sadly this function is called implicitely when resizing currentData which is a vector of tablecourse...
+    nbVar = toCopy.nbVar;
+    reset();
+    nbLignes = toCopy.nbLignes;
+    if((int) toCopy.headers.size() !=  nbVar + 1) {cerr << "ERR TableCourse::TableCourse(other TableCourse), headers[] has wrong size" << endl; return;}
+    attribut.resize(nbLignes, 0);
+    storage.resize(nbLignes, NULL);
+    for(int i = 0; i < nbLignes; ++i){
+        if((int) toCopy.attribut.size() !=  nbLignes) {cerr << "ERR TableCourse::TableCourse(other TableCourse), attribut[] has wrong size" << endl; return;}
+        if((int) toCopy.storage.size() !=  nbLignes) {cerr << "ERR TableCourse::TableCourse(other TableCourse), storage[] has wrong size" << endl; return;}
+
+        storage[i] = new vector<double>(nbVar, 0.0);
+        attribut[i] = toCopy.attribut[i];
+        if((int) toCopy.storage[i]->size() != nbVar) {cerr << "ERR TableCourse::TableCourse(other TableCourse), storage[" << i << "] has wrong size" << endl; return;}
+        for(int j = 0; j < nbVar; ++j){
+            (* (storage[i]))[j] = (* (toCopy.storage[i]))[j];
+        }
+    }
+    for(int i = 0; i < nbVar + 1; ++i){
+        headers[i] = toCopy.headers[i];
+    }
+}
+
 
 double TableCourse::operator()(int vari, typeTime timej){
     if((vari < 0) || (vari >= nbVar)) return 0;

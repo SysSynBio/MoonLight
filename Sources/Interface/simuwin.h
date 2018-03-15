@@ -179,7 +179,7 @@ public:
     Experiment* currentExperiment;      // the experiment that is currently DISPLAYED
     Modele* currentModel;
     virtual void simulate();            // call the simulate function for each sub-experiment
-    vector<TableCourse> currentData;    // to save the kinetics of the last simulation
+    vector<TableCourse*> currentData;    // to save the kinetics of the last simulation
 
     bool isMultiExperiments(){return (currentMode == MULTI_EXPERIMENT);}
     // Module 2 (depends on module 1) : optimization :

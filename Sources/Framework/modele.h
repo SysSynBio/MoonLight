@@ -41,6 +41,8 @@ struct Modele {
     /// The general constraints the submodel should follow are here :
     /// 0 - Calling the constructor : the sub-model calls says the nb of variables and parameters to allocate
     Modele(int _nbVars,  int _nbParams);
+    Modele(const Modele &m){
+        cerr << "Copy modele, why ??" << endl;}
 
     /// 1 - the storage is provided by the mother class memory, (only accesssible by the sub-class but not b outside)
     ///     note that the mother class only allocate them with a good size, but never operates/changes values in these 6 fields,
